@@ -1,4 +1,4 @@
-# Converting
+# Converting-Numbers
 
 Repository in which you can find scripts for converting numbers or other stuff
 
