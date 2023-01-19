@@ -1,0 +1,67 @@
+def get_time_dif(time_1, time_2, rv='all'):
+    """
+        needs to times to be evaluated and calculates the difference between 
+        both times and returns the difference in minutes and hours in the
+        format hh:mm
+
+    Parameters
+    ----------
+    time_1 : String - hh:mm
+        time 1 which is to be compared.
+    time_2 : String - hh:mm
+        time 2 which is to be compared.
+
+    Returns 
+    -------
+    None.
+
+    """
+    time_1_str = time_1.split(':')
+    time_2_str = time_2.split(':')
+    hours_1 = int(time_1_str[0])
+    mins_1 = int(time_1_str[1])
+    hours_2 = int(time_2_str[0])
+    mins_2 = int(time_2_str[1])
+    
+    # difference between both hours
+    if hours_1 > hours_2:
+        diff_hours = hours_1 - hours_2
+        
+        # difference between both minutes
+        if mins_1 > mins_2:
+            diff_mins = mins_1 - mins_2
+        else:
+            # if mins_1 smaller, then there is no full hour between both
+            # times and you have to calc the difference between mins_1 to the 
+            # full 60 minutes and the add the mins_1 for the real difference
+            mins_to_60 = 60 - mins_2
+            diff_mins = mins_1 + mins_to_60
+            
+            if diff_mins == 60:
+                # If the difference is 60 - zero it and don't subtract the hours
+                diff_mins = 0 
+            else:    
+                diff_hours -= 1     # there is no full hour difference -> sub 1
+    else:
+        diff_hours = hours_2 - hours_1
+        
+                # difference between both minutes
+        if mins_2 > mins_1:
+            diff_mins = mins_2 - mins_1
+        else:
+            # if mins_1 smaller, then there is no full hour between both
+            # times and you have to calc the difference between mins_1 to the 
+            # full 60 minutes and the add the mins_1 for the real difference
+            mins_to_60 = 60 - mins_2
+            diff_mins = mins_1 + mins_to_60
+            
+            if diff_mins == 60:
+                # If the difference is 60 - zero it and don't subtract the hours
+                diff_mins = 0 
+            else:    
+                diff_hours -= 1     # there is no full hour difference -> sub 1
+                
+    if rv=='all':
+        return f"{diff_hours}:{diff_mins}"
+    elif rv=='mins':
+        return str(60*diff_hours+diff_mins)
