@@ -1,5 +1,10 @@
-import time
 import datetime
+
+
+def get_work_hour(start):
+    time_now = datetime.datetime.now().strftime("%H:%M")
+    return get_time_dif(time_now, [start, "0:45"])
+
 
 def formate_clock(value):
     """
