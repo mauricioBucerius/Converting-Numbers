@@ -3,7 +3,29 @@ import datetime
 
 def get_work_hour(start):
     time_now = datetime.datetime.now().strftime("%H:%M")
-    return get_time_dif(time_now, [start, "0:45"])
+    breakfast = False
+    lunch = False
+    
+    if not is_later(start, "09:30") and is_later(time_now, "9:30"):
+        breakfast = True
+
+    if not is_later(start, "11:30") and is_later(time_now, "11:30"):
+        lunch = True
+        
+    if lunch:
+        time_pause = "0:45"
+    elif breakfast:
+        time_pause = "0:15"
+    else:
+        time_pause = "0:00"
+        
+    
+    print(f'heutige Pausenzeit: {time_pause} h')
+    return get_time_dif(time_now, [start, time_pause])
+
+def get_end_work(start, worktime):
+    time_now = datetime.datetime.now().strftime("%H:%M")
+    return get_time_sum([time_now, worktime])
 
 
 def formate_clock(value):
@@ -28,6 +50,19 @@ def formate_clock(value):
     else:
         return str(value)
         
+    
+def is_later(time_1, time_2):
+    hours_1, mins_1 = split_time(time_1)
+    hours_2, mins_2 = split_time(time_2)
+    
+    # compares if time_1 is before time_2 or later
+    if hours_1 < hours_2:
+        return False
+    
+    if hours_1 == hours_2 and mins_1 > mins_2:
+        return False
+    
+    return True
     
 def get_calc_dif(hours_1, mins_1, hours_2, mins_2):
     # difference between both hours
@@ -97,12 +132,18 @@ def get_time_sum(time_list):
         sum of all times.
 
     """
-    for idx in range(1, len(time_list)):
-        if idx == 1:
-            time_sum = calc_sum(time_list[0], time_list[idx])
-        else:
-            time_sum = calc_sum(time_sum, time_list[idx])
-    return time_sum
+    if isinstance(time_list, list) and len(time_list) > 1:
+        # print(time_list)
+        for idx in range(1, len(time_list)):
+            if idx == 1:
+                time_sum = calc_sum(time_list[0], time_list[idx])
+            else:
+                time_sum = calc_sum(time_sum, time_list[idx])
+        return time_sum
+    elif len(time_list) == 1:
+        return time_list[0]
+    else:
+        return time_list
 
         
 def split_time(time):
@@ -123,6 +164,7 @@ def split_time(time):
 
     """
     time_str = time.split(':')
+    # print(time_str)
     hours = int(time_str[0])
     mins = int(time_str[1])
     return hours, mins
@@ -146,7 +188,7 @@ def get_time_dif(time_1, time_2, rv='all'):
     time difference as string in representation "hh:mm"
 
     """
-    
+     
     if isinstance(time_2, list):    
         # print(time_1)
         hours_2, mins_2 = split_time(get_time_sum(time_2))
@@ -163,3 +205,18 @@ def get_time_dif(time_1, time_2, rv='all'):
         return f"{formate_clock(diff_hours)}:{formate_clock(diff_mins)}"
     elif rv=='mins':
         return str(60*diff_hours+diff_mins)
+    
+    
+
+if __name__ == '__main__':
+    # print(get_time_dif("13:53", ["8:16", "0:45"]))
+    arbeitswoche = "20:00"
+    today_start = "8:13"
+    week = ["8:28", "6:49"]
+    cur_work = get_work_hour(today_start)
+    week_work = get_time_sum(["7:20", cur_work])
+    time_left = get_time_dif(arbeitswoche, week_work)
+    print(f'heutige Arbeitszeit: {cur_work} h')
+    print(f'wöchentliche Arbeitszeit: {week_work} h')
+    print(f'restliche Arbeitszeit: {time_left} h')
+    print(f'Ende Arbeitszeit: {get_end_work(today_start, time_left)}')
