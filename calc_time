@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jan 24 15:24:07 2023
+
+@author: bucerius
+"""
+
 import datetime
 
 
@@ -66,7 +74,7 @@ def is_later(time_1, time_2):
     
 def get_calc_dif(hours_1, mins_1, hours_2, mins_2):
     # difference between both hours
-    if hours_1 > hours_2:
+    if hours_1 >= hours_2:
         diff_hours = hours_1 - hours_2
         
         # difference between both minutes
@@ -86,8 +94,7 @@ def get_calc_dif(hours_1, mins_1, hours_2, mins_2):
                 diff_hours -= 1     # there is no full hour difference -> sub 1
     else:
         diff_hours = hours_2 - hours_1
-        
-                # difference between both minutes
+        # difference between both minutes
         if mins_2 > mins_1:
             diff_mins = mins_2 - mins_1
         else:
@@ -188,19 +195,21 @@ def get_time_dif(time_1, time_2, rv='all'):
     time difference as string in representation "hh:mm"
 
     """
-     
+    
     if isinstance(time_2, list):    
         # print(time_1)
         hours_2, mins_2 = split_time(get_time_sum(time_2))
     else:
         hours_2, mins_2 = split_time(time_2)
-        
+    
+    
     time_1_str = time_1.split(':')
     hours_1 = int(time_1_str[0])
     mins_1 = int(time_1_str[1])
     
+    # print(hours_2, mins_2, hours_1, mins_1)
     diff_hours, diff_mins = get_calc_dif(hours_1, mins_1, hours_2, mins_2)
-        
+    
     if rv=='all':
         return f"{formate_clock(diff_hours)}:{formate_clock(diff_mins)}"
     elif rv=='mins':
@@ -211,12 +220,22 @@ def get_time_dif(time_1, time_2, rv='all'):
 if __name__ == '__main__':
     # print(get_time_dif("13:53", ["8:16", "0:45"]))
     arbeitswoche = "20:00"
-    today_start = "8:13"
+    today_start = "8:08"
     week = ["8:28", "6:49"]
     cur_work = get_work_hour(today_start)
-    week_work = get_time_sum(["7:20", cur_work])
+    week_work = get_time_sum(["7:20", "7:48", cur_work])
     time_left = get_time_dif(arbeitswoche, week_work)
     print(f'heutige Arbeitszeit: {cur_work} h')
     print(f'wöchentliche Arbeitszeit: {week_work} h')
     print(f'restliche Arbeitszeit: {time_left} h')
     print(f'Ende Arbeitszeit: {get_end_work(today_start, time_left)}')
+    
+    # print(get_time_dif("16:00", get_time_sum(["08:00", "0:45"])))
+    
+    # print(get_time_sum(["8:25", "7:48", "3:30"]))
+    # print(get_time_sum(["1:32", "7:36", "7:58", "2:50"]))
+    # eval time calculations
+    # print(get_time_sum(["1:20", "2:30", "1:50"]))
+    # print(get_time_dif("15:00", "5:40"))
+    # print(get_time_dif("15:00", ["1:20", "2:30", "1:50"]))    
+    
