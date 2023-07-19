@@ -161,95 +161,94 @@ def zahl2prefix(eingabeParameter, nachkommastellen=1):
 # eine Zahl (1k -> 1000). Somit können Benutzerfreundliche Werte eingelesen und ausgegeben werden
 # Rückgabeparameter ist ein float
 
-def prefix2zahl(eingabeParameter):
+def prefix2zahl(eingabe_parameter):
     # Extrahieren der Zahlen innerhalb des Strings:
     string = []
-    prefixDetected = False
+    prefix_detected = False
 
     # ".isalpha()" überprüft ob es sich um einen Buchstaben handelt -> gibt True oder False zurück
     # ".isdigit()" überprüft ob es sich um eine Zahl handelt -> gibt True oder False zurück
-    for i in range(len(eingabeParameter)):
-        # range() bestimmt die Länge der for-Schleife als Endzahl
-        # len() Bestimmt die Länge des Strings und gibt die Zahl zurück
-        if eingabeParameter[i].isalpha():
-            pos = i  # Die Position des Prefix wird ermittelt
-            prefixDetected = True
-        # print(eingabeParameter[i])
+    if not eingabe_parameter.lower().find('e') > -1:
+        i = 0
+        while i <= len(eingabe_parameter) and not eingabe_parameter[i].isalpha():
+            i += 1
+        prefix_detected = True
+        pos = i
+    else:
+        pos = -1
+
     # Unterscheidung um welchen Prefix es sich handelt:
-    if prefixDetected == True:
+    if prefix_detected:
         # Theoretisch könnte Yotta erkannt werden, die Spechertiefe in Python reicht nicht aus, um diese
         # darzustellen
-        if eingabeParameter[i] == "Y":
+        if eingabe_parameter[i] == "Y":
             # Yotta
             multiplier = pow(10, 24)
-        elif eingabeParameter[i] == "Z":
+        elif eingabe_parameter[i] == "Z":
             # Zetta
             multiplier = pow(10, 21)
-        elif eingabeParameter[i] == "E":
+        elif eingabe_parameter[i] == "E":
             # Exa
             multiplier = pow(10, 18)
-        elif eingabeParameter[i] == "P":
+        elif eingabe_parameter[i] == "P":
             # Peta
             multiplier = pow(10, 15)
-        elif eingabeParameter[i] == "T":
+        elif eingabe_parameter[i] == "T":
             # Tera
             multiplier = pow(10, 12)
-        elif eingabeParameter[i] == "G":
+        elif eingabe_parameter[i] == "G":
             # Giga
             multiplier = pow(10, 9)
-        elif eingabeParameter[i] == "M":
+        elif eingabe_parameter[i] == "M":
             # Mega
             multiplier = pow(10, 6)
-        elif eingabeParameter[i] == "k":
+        elif eingabe_parameter[i] == "k":
             # Kilo
             multiplier = pow(10, 3)
-        elif eingabeParameter[i] == "h":
+        elif eingabe_parameter[i] == "h":
             # Hekto
             multiplier = pow(10, 2)
-        elif eingabeParameter[i] == "da":
+        elif eingabe_parameter[i] == "da":
             # Deka
             multiplier = pow(10, 2)
-        elif eingabeParameter[i] == "d":
+        elif eingabe_parameter[i] == "d":
             # Dezi
             multiplier = pow(10, -1)
-        elif eingabeParameter[i] == "c":
+        elif eingabe_parameter[i] == "c":
             # Zenti
             multiplier = pow(10, -2)
-        elif eingabeParameter[i] == "m":
+        elif eingabe_parameter[i] == "m":
             # Milli
             multiplier = pow(10, -3)
-        elif eingabeParameter[i] == "u":
+        elif eingabe_parameter[i] == "u":
             # Mikro
             multiplier = pow(10, -6)
-        elif eingabeParameter[i] == "n":
+        elif eingabe_parameter[i] == "n":
             # Nano
             multiplier = pow(10, -9)
-        elif eingabeParameter[i] == "p":
+        elif eingabe_parameter[i] == "p":
             # Piko
             multiplier = pow(10, -12)
-        elif eingabeParameter[i] == "f":
+        elif eingabe_parameter[i] == "f":
             # Femto
             multiplier = pow(10, -15)
-        elif eingabeParameter[i] == "a":
+        elif eingabe_parameter[i] == "a":
             # Atto
             multiplier = pow(10, -18)
-        elif eingabeParameter[i] == "z":
+        elif eingabe_parameter[i] == "z":
             # Zepto
             multiplier = pow(10, -21)
         # Theoretisch könnte Yokto erkannt werden, die Spechertiefe in Python reicht jedoch nicht aus, um diese
         # darzustellen
-        elif eingabeParameter[i] == "y":
+        elif eingabe_parameter[i] == "y":
             # Yokto
             multiplier = pow(10, -24)
-    else:
-        # Wenn kein Prefix erkannt wurde, dann wird der Multiplier auf 1 gestellt
-        # und die Position auf die Länge des eingegebenen Strings gesetzt
-        multiplier = 1
-        pos = len(eingabeParameter)
 
-    # Berechnung des Wertes durch die Zahl + Muliplikator, der durch das Präfix ermittelt wird
-    value = float(eingabeParameter[0:pos]) * multiplier
-    return value
+        # Berechnung des Wertes durch die Zahl + Muliplikator, der durch das Präfix ermittelt wird
+        return float(eingabe_parameter[0:pos]) * multiplier
+    else:
+        # Berechnung des Wertes durch die Zahl + Muliplikator, der durch das Präfix ermittelt wird
+        return float(eingabe_parameter[0::])
 
 
 if __name__ == '__main__':
