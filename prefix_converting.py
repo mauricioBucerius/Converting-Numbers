@@ -24,48 +24,49 @@ def integer2string(eingabeParameter):
 
 
 def time2msec(float_val):
-	msecs = int((float_val - int(float_val%60))*1000)
-	if msecs < 10:
-		return f'00{msecs}'
-	elif msecs < 100:
-		return f'0{msecs}'
-	else:
-		return str(msecs)
+    msecs = int((float_val - int(float_val % 60)) * 1000)
+    if msecs < 10:
+        return f'00{msecs}'
+    elif msecs < 100:
+        return f'0{msecs}'
+    else:
+        return str(msecs)
+
 
 def time2sec(float_val):
-	secs = int(float_val % 60)
+    secs = int(float_val)
 
-	if secs < 10:
-		return f'0{secs}.{time2msec(float_val)}'
-	else:
-		return f'{secs}.{time2msec(float_val)}'
+    if secs < 10:
+        return f'0{secs}.{time2msec(float_val-secs)}'
+    else:
+        return f'{secs}.{time2msec(float_val-secs)}'
 
 
 def time2min(float_val):
     """
-	converted input into mins:secs.millisecs
-	:param float_val: time in float or int
-	:return: string of time
-	"""
+    converted input into mins:secs.millisecs
+    :param float_val: time in float or int
+    :return: string of time
+    """
     mins = int(float_val / 60)
     if mins < 10:
-        return f'0{mins}:{time2sec(float_val)}'
+        return f'0{mins}:{time2sec(float_val % 60)}'
     else:
-        #return f'{mins}:{round(float_val % 60, 3)}'
-        return f'{mins}:{time2sec(float_val)}'
+        # return f'{mins}:{round(float_val % 60, 3)}'
+        return f'{mins}:{time2sec(float_val % 60)}'
 
 
 def time2hour(float_val):
     """
-	# Converted float value into hours:mins:secs.millisecs
-	# :param float_val: time in float or int
-	# :return: string of time
-	"""
+    # Converted float value into hours:mins:secs.millisecs
+    # :param float_val: time in float or int
+    # :return: string of time
+    """
     hours = int(float_val / 3600)
     if hours < 10:
-        return f'0{hours}:' + time2min(float_val % 3600 / 60)
+        return f'0{hours}:' + time2min(float_val % 3600)
     else:
-        return f'{hours}:' + time2min(float_val % 3600 / 60)
+        return f'{hours}:' + time2min(float_val % 3600)
 
 
 def time2prefix(float_val, nachkommastelle=1):
