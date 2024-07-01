@@ -246,7 +246,11 @@ def prefix2zahl(eingabe_parameter):
             multiplier = pow(10, -24)
 
         # Berechnung des Wertes durch die Zahl + Muliplikator, der durch das Präfix ermittelt wird
-        return float(eingabe_parameter[0:pos]) * multiplier
+        # Berechnung des Wertes durch die Zahl + Muliplikator, der durch das Präfix ermittelt wird
+        if pos>0:
+            return float(eingabe_parameter[0:pos]) * multiplier
+        else:
+            return multiplier
     else:
         # Berechnung des Wertes durch die Zahl + Muliplikator, der durch das Präfix ermittelt wird
         return float(eingabe_parameter[0::])
@@ -258,43 +262,6 @@ if __name__ == '__main__':
     print(time2prefix(0.0603))
     print(zahl2prefix(-10))
     print(zahl2prefix(-36.22659904607586,0))
+    print(prefix2zahl('G'))
+    
 
-# posPrefixK = eingabeParameter.find('k') #Rückgabe -1, wenn er kein Wert findet -> Zahl > 0, wenn der Buchstabe enthalten ist!
-# posPrefixM = eingabeParameter.find('M')
-# posPrefixG = eingabeParameter.find('G')
-# print(posPrefixK)
-# print(posPrefixM)
-
-# if posPrefixK > 0:
-# 	# Dann ist ein Prefix enthalten
-# 	zahlenWert = int(float(eingabeParameter[0:posPrefixK])*pow(10,3))
-# elif posPrefixM > 0:
-# 	zahlenWert = int(float(eingabeParameter[0:posPrefixM])*pow(10,6))
-# elif posPrefixG > 0:
-# 	zahlenWert = int(float(eingabeParameter[0:posPrefixG])*pow(10,9))
-# else:
-# 	# Unterscheidung ob ein Integerwert 10,20, 15 oder ein float 1.2, 1.4, 1.5 eingelesen wird
-# 	zahlenWert = float(eingabeParameter)
-
-
-# for zahl in range(1e-24:1e3:1e24):
-# zahl = 1e-21
-# zahl = 1.1
-# #while zahl < 1e24:
-# #	print(zahl2prefix(zahl))
-# #	zahl *= 1e3
-# #print(zahl2prefix(zahl))
-
-# #for zahl in range(900,1000000,10):
-# #	print(zahl2prefix(zahl))
-#  #for zahl in range(0,5,1):
-# #	print(zahl)
-# wert = integer2string(zahl)
-# print(wert)
-
-# test_string = "1.98 k"
-# value = prefix2zahl(test_string)
-# print(value)
-# res = [int(i) for i in test_string.split() if i.isdigit()]
-# print(test_string)
-# print(res)
