@@ -5,7 +5,7 @@
 # Beispiel:
 # Eingabe 1000 (float) -> Ausgabe "1 k" (String)
 
-def integer2string(eingabeParameter):
+def integer2string(eingabeParameter:float) -> str:
     try:
         if eingabeParameter >= 1 or eingabeParameter < 1000:
             if eingabeParameter < 10:
@@ -23,7 +23,7 @@ def integer2string(eingabeParameter):
     return stringValue
 
 
-def time2msec(float_val):
+def time2msec(float_val:float) -> str:
     msecs = int((float_val - int(float_val % 60)) * 1000)
     if msecs < 10:
         return f'00{msecs}'
@@ -33,7 +33,7 @@ def time2msec(float_val):
         return str(msecs)
 
 
-def time2sec(float_val):
+def time2sec(float_val:float) -> str:
     secs = int(float_val)
 
     if secs < 10:
@@ -42,7 +42,7 @@ def time2sec(float_val):
         return f'{secs}.{time2msec(float_val-secs)}'
 
 
-def time2min(float_val):
+def time2min(float_val:float) -> str:
     """
     converted input into mins:secs.millisecs
     :param float_val: time in float or int
@@ -56,7 +56,7 @@ def time2min(float_val):
         return f'{mins}:{time2sec(float_val % 60)}'
 
 
-def time2hour(float_val):
+def time2hour(float_val:float) -> str:
     """
     # Converted float value into hours:mins:secs.millisecs
     # :param float_val: time in float or int
@@ -69,16 +69,16 @@ def time2hour(float_val):
         return f'{hours}:' + time2min(float_val % 3600)
 
 
-def time2prefix(float_val, nachkommastelle=1):
+def time2prefix(float_val: float, nachkommastelle: int=1):
     if float_val < 60:
-        return zahl2prefix(float_val, nachkommastelle) + 's'
+        return number2prefix(float_val, nachkommastelle) + 's'
     elif float_val / 60 >= 1 and float_val / 3600 < 1:
         return time2min(float_val) + ' min'
     elif float_val / 3600 >= 1:
         return time2hour(float_val) + ' h'
 
 
-def zahl2prefix(eingabeParameter, nachkommastellen=1):
+def number2prefix(eingabeParameter: str, nachkommastellen: int=1):
     wert = eingabeParameter
     # nachkommastellen = 0
     calcIndex = 0
@@ -162,7 +162,7 @@ def zahl2prefix(eingabeParameter, nachkommastellen=1):
 # eine Zahl (1k -> 1000). Somit können Benutzerfreundliche Werte eingelesen und ausgegeben werden
 # Rückgabeparameter ist ein float
 
-def prefix2zahl(eingabe_parameter):
+def prefix2number(eingabe_parameter: str) -> float:
     # Extrahieren der Zahlen innerhalb des Strings:
     string = []
     prefix_detected = False
@@ -246,7 +246,6 @@ def prefix2zahl(eingabe_parameter):
             multiplier = pow(10, -24)
 
         # Berechnung des Wertes durch die Zahl + Muliplikator, der durch das Präfix ermittelt wird
-        # Berechnung des Wertes durch die Zahl + Muliplikator, der durch das Präfix ermittelt wird
         if pos>0:
             return float(eingabe_parameter[0:pos]) * multiplier
         else:
@@ -260,8 +259,7 @@ if __name__ == '__main__':
     print(time2prefix(7198.5))
     print(time2prefix(125.5))
     print(time2prefix(0.0603))
-    print(zahl2prefix(-10))
-    print(zahl2prefix(-36.22659904607586,0))
-    print(prefix2zahl('G'))
-    
+    print(number2prefix(-10))
+    print(number2prefix(-36.22659904607586,0))
+    print(prefix2number('G'))
 
