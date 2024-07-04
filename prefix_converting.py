@@ -90,7 +90,7 @@ def number2prefix(eingabeParameter: str, nachkommastellen: int=1):
     if eingabeParameter == 0:
         return '0 '
     elif eingabeParameter < 0:
-        return f'-{zahl2prefix(abs(eingabeParameter), nachkommastellen)}'
+        return f'-{number2prefix(abs(eingabeParameter), nachkommastellen)}'
 
     if eingabeParameter < 1:
         # Wenn die Berechnung in diesem Zwei durchgeführt wird -> Leistungsberechnung
@@ -157,6 +157,36 @@ def number2prefix(eingabeParameter: str, nachkommastellen: int=1):
     return (wert + " " + prefix)
 
 
+def is_unit(item: str) -> bool:
+    """
+        checks if the item is a valid unit and returns True -> else False
+    """
+    unit: list=['m', 'ft', 'in', 'mi',              # unit in length
+                'dB', 'dBc', 'dBW', 'dBm', 'dBV',   # logarithmic units
+                '°C', 'Â°C', 'F'
+                'kg', 'lb', 'oz',                   # mass
+                's', 'min', 'h', 'd', 'yr',         # time
+                'K', '°C', 'Â°C', 'Â°F', '°F',      # Temperature
+                'A', 'V', 'Ω', 'Ohm',               # electrical units
+                'W', 'J',
+                'Pa', 'bar', 'atm', 'psi',          # pressure
+                'Hz', 
+                'm/s', 'km/h', 'mph',               # speed
+                'm/s²', 'g',                        # acceleration (g - gravitation)
+                'N', 'lbf',                         # force
+                'kg/m³', 'g/cm³',                   # mass density
+                'm³', 'L', 'cm³', 'gal',            # volume
+                'm²', 'cm²', 'ft²', 'in²',          # area
+                '°', 'rad',                         # angle
+                'T', 'Wb', 'H',                     # magnetic
+                'Bq', 'Ci'                          # radioactivity
+                ]
+    
+    if item in unit:
+        return True
+    else:
+        return False
+
 ##################################################################################################
 # Ein vom Benutzer eingegebener String wird konvertiert von einem gemischten Sting (z.B. 1k) in 
 # eine Zahl (1k -> 1000). Somit können Benutzerfreundliche Werte eingelesen und ausgegeben werden
@@ -178,6 +208,9 @@ def prefix2number(eingabe_parameter: str) -> float:
     else:
         pos = -1
 
+    if is_unit(eingabe_parameter):
+        return 1
+    
     # Unterscheidung um welchen Prefix es sich handelt:
     if prefix_detected:
         # Theoretisch könnte Yotta erkannt werden, die Spechertiefe in Python reicht nicht aus, um diese
