@@ -147,16 +147,16 @@ def number2prefix(data: str, digits: int=1, **kwargs):
         kwargs.update({'factor': True})
         # check if the data is increasing monotonously
         if data[0] < data[-1]:
-            
+            kwargs.update({"sep": True})
             factor, prefix = number2prefix(data[-1], digits=digits, **kwargs)
         else:
             factor, prefix = number2prefix(max(abs(data)), digits=digits, **kwargs)
 
         conv_data = data * factor
         if sep:
-            return conv_data, prefix
+            return np.round(conv_data, digits), prefix
         else:
-            return [f'{item} {prefix}' for item in conv_data]
+            return [f'{round(item, digits)} {prefix}' for item in conv_data]
     # Wenn Eingabe None ist -> Rückgabe von None
     if data is None:
         return None
