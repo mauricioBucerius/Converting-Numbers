@@ -1,3 +1,5 @@
+import numpy as np
+
 ##################################################################################################
 # Mittels dieser Funktion wird der berechnete Widerstandswert eingelesen und ggf. auf den
 # passenden Präfix gekürzt
@@ -78,83 +80,134 @@ def time2prefix(float_val: float, nachkommastelle: int=1):
         return time2hour(float_val) + ' h'
 
 
-def number2prefix(eingabeParameter: str, nachkommastellen: int=1):
-    wert = eingabeParameter
+def get_factor_larger_1(val: float):
+    calc_index = 0
+    while val >= 1000:
+            val /= 1000
+            calc_index += 1
+
+    if calc_index == 1:
+        prefix = "k"
+    elif calc_index == 2:
+        prefix = "M"
+    elif calc_index == 3:
+        prefix = "G"
+    elif calc_index == 4:
+        prefix = "T"
+    elif calc_index == 5:
+        prefix = "P"
+    elif calc_index == 6:
+        prefix = "E"
+    elif calc_index == 7:
+        prefix = "Z"
+    elif calc_index == 8:
+        prefix = "Y"
+    return val, calc_index, prefix
+
+
+def get_factor_smaller_1(val: float):
+
+    calc_index = 0
+    while val < 1:
+            val *= 1000
+            calc_index += 1
+
+    if calc_index == 1:
+        prefix = "m"
+    elif calc_index == 2:
+        prefix = "u"
+    elif calc_index == 3:
+        prefix = "n"
+    elif calc_index == 4:
+        prefix = "p"
+    elif calc_index == 5:
+        prefix = "f"
+    elif calc_index == 6:
+        prefix = "a"
+    elif calc_index == 7:
+        prefix = "z"
+    elif calc_index == 8:
+        prefix = "y"
+    return val, calc_index, prefix
+
+
+def number2prefix(data: str, digits: int=1, **kwargs):
+    val = data
     # nachkommastellen = 0
-    calcIndex = 0
+    calc_index = 0
     prefix = ""
+    smaller_1 = False
+    larger_1000 = False
 
+    # optional keywords
+    sep = kwargs.get('sep', False)
+    factor = kwargs.get('factor', False)
+
+    if isinstance(data, list) or isinstance(data, np.ndarray):
+        kwargs.update({'factor': True})
+        # check if the data is increasing monotonously
+        if data[0] < data[-1]:
+            
+            factor, prefix = number2prefix(data[-1], digits=digits, **kwargs)
+        else:
+            factor, prefix = number2prefix(max(abs(data)), digits=digits, **kwargs)
+
+        conv_data = data * factor
+        if sep:
+            return conv_data, prefix
+        else:
+            return [f'{item} {prefix}' for item in conv_data]
     # Wenn Eingabe None ist -> Rückgabe von None
-    if eingabeParameter is None:
+    if data is None:
         return None
-    if eingabeParameter == 0:
+    if data == 0:
         return '0 '
-    elif eingabeParameter < 0:
-        return f'-{number2prefix(abs(eingabeParameter), nachkommastellen)}'
+    elif data < 0:
+        if sep and not factor:
+            data, prefix = number2prefix(abs(data), digits, **kwargs)
+            return -data, prefix
+        elif sep and factor:
+            return number2prefix(abs(data), digits, **kwargs)
+        else:
+            return f'-{number2prefix(abs(data), digits, **kwargs)}'
 
-    if eingabeParameter < 1:
+    if data < 1:
         # Wenn die Berechnung in diesem Zwei durchgeführt wird -> Leistungsberechnung
-        while wert < 1:
-            wert *= 1000
-            calcIndex += 1
+        smaller_1 = True
+        val, calc_index, prefix = get_factor_smaller_1(data)
 
-        if calcIndex == 1:
-            prefix = "m"
-        elif calcIndex == 2:
-            prefix = "u"
-        elif calcIndex == 3:
-            prefix = "n"
-        elif calcIndex == 4:
-            prefix = "p"
-        elif calcIndex == 5:
-            prefix = "f"
-        elif calcIndex == 6:
-            prefix = "a"
-        elif calcIndex == 7:
-            prefix = "z"
-        elif calcIndex == 8:
-            prefix = "y"
-
-    # Der berechnete Werte für die Leistung muss immer gerundet werden!
-    # wert = str(round(wert, nachkommastellen)) #"round(Wert, Nachkommastelle)" Rundet den auf beliebig viele Nachkommastellen
-    elif eingabeParameter >= 1000:
+    elif data >= 1000:
+        larger_1000 = True
         # In diesem Zweig wird die Berechnung für die Widerstände durchgeführt
-        while wert >= 1000:
-            wert /= 1000
-            calcIndex += 1
-
-        if calcIndex == 1:
-            prefix = "k"
-        elif calcIndex == 2:
-            prefix = "M"
-        elif calcIndex == 3:
-            prefix = "G"
-        elif calcIndex == 4:
-            prefix = "T"
-        elif calcIndex == 5:
-            prefix = "P"
-        elif calcIndex == 6:
-            prefix = "E"
-        elif calcIndex == 7:
-            prefix = "Z"
-        elif calcIndex == 8:
-            prefix = "Y"
-    # wert = round(wert, nachkommastellen)
-    # else:
+        val, calc_index, prefix = get_factor_larger_1(data)
+    
+    if sep:
+        # assigns the correct factor for calculating the correct values
+        if larger_1000:
+            factor_val = 10**(-calc_index*3)
+        elif smaller_1:
+            factor_val = 10**(calc_index*3)
+        else:
+            factor_val = 1
+        
+        if factor:
+            # returns only the factor and the prefix -> converting whole array
+            return factor_val, prefix
+        else:
+            return factor_val * data, prefix
+        
     # Die Ausgabe soll so formatiert werden, dass Werte < 10 (z.B. 1.2 oder 6.8) als float
     # ausgegeben werden und größere Werte (z.B. 10 oder 22 ) als Integer
-    if wert > 100:
-        wert = str(int(round(wert, 0)))
-    elif wert < 10 or nachkommastellen > 0:
-        wert = str(round(wert, nachkommastellen))
-    # print(wert + " < 10")
+    if val > 100:
+        val = str(int(round(val, 0)))
+    elif val < 10 or digits > 0:
+        val = str(round(val, digits))
     else:
-        wert = str(int(round(wert, 0)))
-    # print(wert + " > 10")
+        val = str(int(round(val, 0)))
 
     # Werte zwischen 1 und 1000 werden nicht in einen String umgewandelt -> "doppelte"
     # Umwandlung im Rückgabeparameter notwendig!
-    return (wert + " " + prefix)
+    return (val + " " + prefix)
 
 
 def is_unit(item: str) -> bool:
@@ -163,10 +216,9 @@ def is_unit(item: str) -> bool:
     """
     unit: list=['m', 'ft', 'in', 'mi',              # unit in length
                 'dB', 'dBc', 'dBW', 'dBm', 'dBV',   # logarithmic units
-                '°C', 'Â°C', 'F'
                 'kg', 'lb', 'oz',                   # mass
                 's', 'min', 'h', 'd', 'yr',         # time
-                'K', '°C', 'Â°C', 'Â°F', '°F',      # Temperature
+                'K', 'C', 'Â°C', '°C', 'Â°F', '°F', # Temperature
                 'A', 'V', 'Ω', 'Ohm',               # electrical units
                 'W', 'J',
                 'Pa', 'bar', 'atm', 'psi',          # pressure
@@ -201,7 +253,7 @@ def prefix2number(eingabe_parameter: str) -> float:
     # ".isdigit()" überprüft ob es sich um eine Zahl handelt -> gibt True oder False zurück
     if not eingabe_parameter.lower().find('e') > -1:
         i = 0
-        while i <= len(eingabe_parameter) and not eingabe_parameter[i].isalpha():
+        while i < len(eingabe_parameter) and not eingabe_parameter[i].isalpha():
             i += 1
         prefix_detected = True
         pos = i
